@@ -98,8 +98,19 @@ public void DisplayReceipt()
     if (Payment != null)
     {
         Console.WriteLine();
-        Console.WriteLine($"Payment: {Payment.GetType().Name}");
-        Console.WriteLine($"Amount: ₱{Payment.Amount:F2}");
+
+        if (Payment is CashPayment cashPayment)
+        {
+            Console.WriteLine("Payment Method: Cash");
+            Console.WriteLine($"Amount Due: ₱{cashPayment.Amount:F2}");
+            Console.WriteLine($"Cash Received: ₱{cashPayment.CashReceived:F2}");
+            Console.WriteLine($"Change: ₱{cashPayment.Change:F2}");
+        }
+        else
+        {
+            Console.WriteLine($"Payment Method: {Payment.GetType().Name}");
+            Console.WriteLine($"Amount: ₱{Payment.Amount:F2}");
+        }
     }
 
     Console.WriteLine("=================================");
