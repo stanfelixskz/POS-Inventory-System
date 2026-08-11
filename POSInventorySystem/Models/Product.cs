@@ -46,4 +46,14 @@ public class Product
     {
         return Stock <= 5;
     }
+    public bool RemoveStock(int quantity)
+{
+    if (quantity <= 0 || quantity > Stock)
+    {
+        return false;
+    }
+
+    Stock -= quantity;
+    return true;
+}
 }

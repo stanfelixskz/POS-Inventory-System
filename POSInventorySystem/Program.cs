@@ -1,21 +1,40 @@
-﻿using POSInventorySystem.Models;
+﻿using POSInventorySystem.Data;
+using POSInventorySystem.Models;
 
-Console.WriteLine("=================================");
-Console.WriteLine("      PAYMENT METHODS TEST");
-Console.WriteLine("=================================");
-Console.WriteLine();
+Transaction transaction = new Transaction("T001");
 
-Payment payment;
+Product? chicken = DataStore.Products.FirstOrDefault(
+    product => product.ProductId == "P001"
+);
 
-payment = new CashPayment(300.00m, 500.00m);
-payment.ProcessPayment();
+Product? coffee = DataStore.Products.FirstOrDefault(
+    product => product.ProductId == "P003"
+);
 
-Console.WriteLine();
+if (chicken != null)
+{
+    transaction.AddItem(chicken, 2);
+}
 
-payment = new GCashPayment(250.00m);
-payment.ProcessPayment();
+if (coffee != null)
+{
+    transaction.AddItem(coffee, 1);
+}
 
-Console.WriteLine();
+if (transaction.CompleteTransaction())
+{
+    Console.WriteLine("Transaction completed successfully.");
+    Console.WriteLine();
 
-payment = new CardPayment(450.00m);
-payment.ProcessPayment();
+    transaction.DisplayReceipt();
+
+    Console.WriteLine();
+    Console.WriteLine("Updated Inventory:");
+    Console.WriteLine(
+        $"{chicken?.Name}: {chicken?.Stock} remaining"
+    );
+
+    Console.WriteLine(
+        $"{coffee?.Name}: {coffee?.Stock} remaining"
+    );
+}
