@@ -2,48 +2,61 @@ namespace POSInventorySystem.Models;
 
 public class Transaction
 {
-    private readonly List<CartItem> items = new List<CartItem>();
+private readonly List<CartItem> items = new List<CartItem>();
 
-    public string TransactionId { get; private set; }
-    public DateTime Date { get; private set; }
+public string TransactionId { get; private set; }
+public DateTime Date { get; private set; }
 
-    public IReadOnlyList<CartItem> Items => items;
+public IReadOnlyList<CartItem> Items => items;
+public Payment? Payment { get; private set; }
 
-    public decimal Total
+public decimal Total
+{
+    get
     {
-        get
-        {
-            return items.Sum(item => item.Subtotal);
-        }
+        return items.Sum(item => item.Subtotal);
+    }
+}
+
+public Transaction(string transactionId)
+{
+    TransactionId = transactionId;
+    Date = DateTime.Now;
+}
+
+public void AddItem(Product product, int quantity)
+{
+    if (quantity <= 0)
+    {
+        Console.WriteLine("Invalid quantity.");
+        return;
     }
 
-    public Transaction(string transactionId)
+    CartItem? existingItem = items.FirstOrDefault(
+        item => item.Product.ProductId == product.ProductId
+    );
+
+    if (existingItem != null)
     {
-        TransactionId = transactionId;
-        Date = DateTime.Now;
+        Console.WriteLine("Product is already in the cart.");
+        return;
     }
 
-    public void AddItem(Product product, int quantity)
+    items.Add(new CartItem(product, quantity));
+}
+
+public bool ProcessPayment(Payment payment)
+{
+    if (!payment.ProcessPayment())
     {
-        if (quantity <= 0)
-        {
-            Console.WriteLine("Invalid quantity.");
-            return;
-        }
-
-        CartItem? existingItem = items.FirstOrDefault(
-            item => item.Product.ProductId == product.ProductId
-        );
-
-        if (existingItem != null)
-        {
-            Console.WriteLine("Product is already in the cart.");
-            return;
-        }
-
-        items.Add(new CartItem(product, quantity));
+        return false;
     }
-    public bool CompleteTransaction()
+
+    Payment = payment;
+    return true;
+}
+
+public bool CompleteTransaction()
 {
     foreach (CartItem item in items)
     {
@@ -65,22 +78,31 @@ public class Transaction
     return true;
 }
 
-    public void DisplayReceipt()
+public void DisplayReceipt()
+{
+    Console.WriteLine("=================================");
+    Console.WriteLine("             RECEIPT");
+    Console.WriteLine("=================================");
+    Console.WriteLine($"Transaction ID: {TransactionId}");
+    Console.WriteLine($"Date: {Date}");
+    Console.WriteLine();
+
+    foreach (CartItem item in items)
     {
-        Console.WriteLine("=================================");
-        Console.WriteLine("             RECEIPT");
-        Console.WriteLine("=================================");
-        Console.WriteLine($"Transaction ID: {TransactionId}");
-        Console.WriteLine($"Date: {Date}");
-        Console.WriteLine();
-
-        foreach (CartItem item in items)
-        {
-            item.DisplayCartItem();
-        }
-
-        Console.WriteLine();
-        Console.WriteLine($"TOTAL: ₱{Total:F2}");
-        Console.WriteLine("=================================");
+        item.DisplayCartItem();
     }
+
+    Console.WriteLine();
+    Console.WriteLine($"TOTAL: ₱{Total:F2}");
+
+    if (Payment != null)
+    {
+        Console.WriteLine();
+        Console.WriteLine($"Payment: {Payment.GetType().Name}");
+        Console.WriteLine($"Amount: ₱{Payment.Amount:F2}");
+    }
+
+    Console.WriteLine("=================================");
+}
+
 }

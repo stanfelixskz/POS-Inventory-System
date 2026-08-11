@@ -21,20 +21,29 @@ if (coffee != null)
     transaction.AddItem(coffee, 1);
 }
 
-if (transaction.CompleteTransaction())
+CashPayment payment = new CashPayment(
+    transaction.Total,
+    500.00m
+);
+
+if (transaction.ProcessPayment(payment))
 {
-    Console.WriteLine("Transaction completed successfully.");
-    Console.WriteLine();
+    if (transaction.CompleteTransaction())
+    {
+        Console.WriteLine("Transaction completed successfully.");
+        Console.WriteLine();
 
-    transaction.DisplayReceipt();
+        transaction.DisplayReceipt();
 
-    Console.WriteLine();
-    Console.WriteLine("Updated Inventory:");
-    Console.WriteLine(
-        $"{chicken?.Name}: {chicken?.Stock} remaining"
-    );
+        Console.WriteLine();
+        Console.WriteLine("Updated Inventory:");
 
-    Console.WriteLine(
-        $"{coffee?.Name}: {coffee?.Stock} remaining"
-    );
+        Console.WriteLine(
+            $"{chicken?.Name}: {chicken?.Stock} remaining"
+        );
+
+        Console.WriteLine(
+            $"{coffee?.Name}: {coffee?.Stock} remaining"
+        );
+    }
 }
