@@ -5,9 +5,8 @@ Transaction transaction = new Transaction("T001");
 
 while (true)
 {
-Console.WriteLine();
 Console.WriteLine("=================================");
-Console.WriteLine(" POS INVENTORY SYSTEM");
+Console.WriteLine("      STARBUCKS POS SYSTEM");
 Console.WriteLine("=================================");
 Console.WriteLine("1. View Products");
 Console.WriteLine("2. Add Product to Cart");
