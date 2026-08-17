@@ -1,7 +1,7 @@
 ﻿using POSInventorySystem.Data;
 using POSInventorySystem.Models;
 
-Transaction transaction = new Transaction("T001");
+Transaction transaction = new Transaction();
 
 while (true)
 {

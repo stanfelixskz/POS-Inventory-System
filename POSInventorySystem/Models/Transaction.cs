@@ -1,8 +1,11 @@
 namespace POSInventorySystem.Models;
 
+
 public class Transaction
 {
 private readonly List<CartItem> items = new List<CartItem>();
+
+private static int transactionCounter = 1;
 
 public string TransactionId { get; private set; }
 public DateTime Date { get; private set; }
@@ -18,9 +21,10 @@ public decimal Total
     }
 }
 
-public Transaction(string transactionId)
+public Transaction()
 {
-    TransactionId = transactionId;
+    TransactionId = $"T{transactionCounter:D3}";
+    transactionCounter++;
     Date = DateTime.Now;
 }
 

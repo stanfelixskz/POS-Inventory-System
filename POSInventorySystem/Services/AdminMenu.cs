@@ -54,6 +54,14 @@ switch (choice)
         break;
 
     case "6":
+        adminService.ViewSalesRecords();
+        break;
+
+    case "7":
+        adminService.ViewSalesSummary();
+        break;
+
+    case "8":
         running = false;
         break;
 

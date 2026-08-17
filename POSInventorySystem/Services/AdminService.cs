@@ -242,4 +242,87 @@ product.UpdateProductInfo(
 
     Console.WriteLine("=================================");
     }
+
+public void ViewSalesRecords()
+{
+    Console.WriteLine();
+    Console.WriteLine("=================================");
+    Console.WriteLine("          SALES RECORDS");
+    Console.WriteLine("=================================");
+
+    if (DataStore.Transactions.Count == 0)
+    {
+        Console.WriteLine("No sales transactions recorded.");
+        Console.WriteLine("=================================");
+        return;
+    }
+
+    foreach (Transaction transaction in DataStore.Transactions)
+    {
+        Console.WriteLine();
+        Console.WriteLine($"Transaction ID: {transaction.TransactionId}");
+        Console.WriteLine($"Date: {transaction.Date}");
+
+        Console.WriteLine("Items:");
+
+        foreach (CartItem item in transaction.Items)
+        {
+            Console.WriteLine(
+                $"  {item.Product.Name} x{item.Quantity} = ₱{item.Subtotal:F2}"
+            );
+        }
+
+        Console.WriteLine($"Total: ₱{transaction.Total:F2}");
+        Console.WriteLine(
+            $"Payment: {transaction.Payment?.GetType().Name ?? "N/A"}"
+        );
+    }
+
+    Console.WriteLine();
+    Console.WriteLine("=================================");
+    }
+
+
+public void ViewSalesSummary()
+{
+    Console.WriteLine();
+    Console.WriteLine("=================================");
+    Console.WriteLine("          SALES SUMMARY");
+    Console.WriteLine("=================================");
+
+    if (DataStore.Transactions.Count == 0)
+    {
+        Console.WriteLine("No sales transactions recorded.");
+        Console.WriteLine("=================================");
+        return;
+    }
+
+    int totalTransactions = DataStore.Transactions.Count;
+
+    decimal totalSales = DataStore.Transactions.Sum(
+        transaction => transaction.Total
+    );
+
+    decimal cashSales = DataStore.Transactions
+        .Where(transaction => transaction.Payment is CashPayment)
+        .Sum(transaction => transaction.Total);
+
+    decimal gcashSales = DataStore.Transactions
+        .Where(transaction => transaction.Payment is GCashPayment)
+        .Sum(transaction => transaction.Total);
+
+    decimal cardSales = DataStore.Transactions
+        .Where(transaction => transaction.Payment is CardPayment)
+        .Sum(transaction => transaction.Total);
+
+    Console.WriteLine($"Total Transactions: {totalTransactions}");
+    Console.WriteLine($"Total Sales: ₱{totalSales:F2}");
+    Console.WriteLine();
+
+    Console.WriteLine($"Cash Sales: ₱{cashSales:F2}");
+    Console.WriteLine($"GCash Sales: ₱{gcashSales:F2}");
+    Console.WriteLine($"Card Sales: ₱{cardSales:F2}");
+
+    Console.WriteLine("=================================");
+    }
 }
