@@ -46,6 +46,15 @@ public class Product
     {
         return Stock <= 5;
     }
+    public void UpdateProductInfo(
+    string name,
+    decimal price,
+    string category)
+{
+    Name = name;
+    Price = price;
+    Category = category;
+}
     public bool RemoveStock(int quantity)
 {
     if (quantity <= 0 || quantity > Stock)
