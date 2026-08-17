@@ -5,23 +5,29 @@ namespace POSInventorySystem.Services;
 
 public class AdminService
 {
-    public void ViewInventory()
+public void ViewInventory()
+{
+    Console.WriteLine();
+    Console.WriteLine("==============================================");
+    Console.WriteLine("                 INVENTORY");
+    Console.WriteLine("==============================================");
+    Console.WriteLine(
+        $"{"ID",-6} {"PRODUCT",-25} {"PRICE",10} {"STOCK",8}"
+    );
+    Console.WriteLine("----------------------------------------------");
+
+    foreach (Product product in DataStore.Products)
     {
-        Console.WriteLine();
-        Console.WriteLine("=================================");
-        Console.WriteLine("        ADMIN INVENTORY");
-        Console.WriteLine("=================================");
-
-        foreach (Product product in DataStore.Products)
-        {
-            Console.WriteLine(
-                $"{product.ProductId} | {product.Name} | " +
-                $"₱{product.Price:F2} | Stock: {product.Stock}"
-            );
-        }
-
-        Console.WriteLine("=================================");
+        Console.WriteLine(
+            $"{product.ProductId,-6} " +
+            $"{product.Name,-25} " +
+            $"₱{product.Price,9:F2} " +
+            $"{product.Stock,8}"
+        );
     }
+
+    Console.WriteLine("==============================================");
+}
     public void AddProduct()
 {
     Console.WriteLine();
@@ -287,41 +293,79 @@ public void ViewSalesSummary()
 {
     Console.WriteLine();
     Console.WriteLine("=================================");
-    Console.WriteLine("          SALES SUMMARY");
+    Console.WriteLine("       TODAY'S SALES SUMMARY");
     Console.WriteLine("=================================");
 
-    if (DataStore.Transactions.Count == 0)
+    DateTime today = DateTime.Today;
+
+    List<Transaction> todayTransactions =
+        DataStore.Transactions
+            .Where(transaction =>
+                transaction.Date.Date == today)
+            .ToList();
+
+    Console.WriteLine(
+        $"Date: {today:MMMM dd, yyyy}"
+    );
+
+    Console.WriteLine();
+
+    if (todayTransactions.Count == 0)
     {
-        Console.WriteLine("No sales transactions recorded.");
+        Console.WriteLine(
+            "No sales transactions recorded today."
+        );
+
         Console.WriteLine("=================================");
         return;
     }
 
-    int totalTransactions = DataStore.Transactions.Count;
+    int totalTransactions = todayTransactions.Count;
 
-    decimal totalSales = DataStore.Transactions.Sum(
+    decimal totalSales = todayTransactions.Sum(
         transaction => transaction.Total
     );
 
-    decimal cashSales = DataStore.Transactions
-        .Where(transaction => transaction.Payment is CashPayment)
+    decimal cashSales = todayTransactions
+        .Where(transaction =>
+            transaction.Payment is CashPayment)
         .Sum(transaction => transaction.Total);
 
-    decimal gcashSales = DataStore.Transactions
-        .Where(transaction => transaction.Payment is GCashPayment)
+    decimal gcashSales = todayTransactions
+        .Where(transaction =>
+            transaction.Payment is GCashPayment)
         .Sum(transaction => transaction.Total);
 
-    decimal cardSales = DataStore.Transactions
-        .Where(transaction => transaction.Payment is CardPayment)
+    decimal cardSales = todayTransactions
+        .Where(transaction =>
+            transaction.Payment is CardPayment)
         .Sum(transaction => transaction.Total);
 
-    Console.WriteLine($"Total Transactions: {totalTransactions}");
-    Console.WriteLine($"Total Sales: ₱{totalSales:F2}");
+    Console.WriteLine(
+        $"Total Transactions: {totalTransactions}"
+    );
+
+    Console.WriteLine(
+        $"Total Sales: ₱{totalSales:F2}"
+    );
+
     Console.WriteLine();
 
-    Console.WriteLine($"Cash Sales: ₱{cashSales:F2}");
-    Console.WriteLine($"GCash Sales: ₱{gcashSales:F2}");
-    Console.WriteLine($"Card Sales: ₱{cardSales:F2}");
+    Console.WriteLine("---------------------------------");
+    Console.WriteLine("       PAYMENT BREAKDOWN");
+    Console.WriteLine("---------------------------------");
+
+    Console.WriteLine(
+        $"Cash Sales:  ₱{cashSales:F2}"
+    );
+
+    Console.WriteLine(
+        $"GCash Sales: ₱{gcashSales:F2}"
+    );
+
+    Console.WriteLine(
+        $"Card Sales:  ₱{cardSales:F2}"
+    );
 
     Console.WriteLine("=================================");
     }

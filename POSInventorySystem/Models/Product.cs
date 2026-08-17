@@ -65,4 +65,11 @@ public class Product
     Stock -= quantity;
     return true;
 }
+
+    public virtual void DisplayPOSItem()
+{
+    Console.WriteLine(
+        $"{ProductId,-6} {Name,-25} ₱{Price,8:F2}"
+    );
+}
 }

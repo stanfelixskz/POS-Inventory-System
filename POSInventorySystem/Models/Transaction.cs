@@ -28,7 +28,10 @@ public Transaction()
     Date = DateTime.Now;
 }
 
-public void AddItem(Product product, int quantity)
+public void AddItem(
+    Product product,
+    int quantity,
+    BeverageCustomization? customization = null)
 {
     if (quantity <= 0)
     {
@@ -46,7 +49,13 @@ public void AddItem(Product product, int quantity)
         return;
     }
 
-    items.Add(new CartItem(product, quantity));
+    items.Add(
+        new CartItem(
+            product,
+            quantity,
+            customization
+        )
+    );
 }
 
 public bool ProcessPayment(Payment payment)
@@ -84,40 +93,107 @@ public bool CompleteTransaction()
 
 public void DisplayReceipt()
 {
-    Console.WriteLine("=================================");
-    Console.WriteLine("             RECEIPT");
-    Console.WriteLine("=================================");
-    Console.WriteLine($"Transaction ID: {TransactionId}");
-    Console.WriteLine($"Date: {Date}");
     Console.WriteLine();
+    Console.WriteLine("========================================");
+    Console.WriteLine("              STARBUCKS");
+    Console.WriteLine("           SALES RECEIPT");
+    Console.WriteLine("========================================");
+
+    Console.WriteLine($"Transaction: {TransactionId}");
+    Console.WriteLine(
+        $"Date: {Date:MMM dd, yyyy hh:mm tt}"
+    );
+
+    Console.WriteLine("----------------------------------------");
 
     foreach (CartItem item in items)
     {
-        item.DisplayCartItem();
+        Console.WriteLine(item.Product.Name);
+
+        if (item.Customization != null)
+        {
+            Console.WriteLine(
+                $"  {item.Customization.Size} / " +
+                $"{item.Customization.Serving}"
+            );
+
+            Console.WriteLine(
+                $"  {item.Customization.Milk}"
+            );
+
+            if (item.Customization.ExtraShots > 0)
+            {
+                Console.WriteLine(
+                    $"  +{item.Customization.ExtraShots} Shot(s)"
+                );
+            }
+
+            if (item.Customization.Syrup != "None")
+            {
+                Console.WriteLine(
+                    $"  {item.Customization.Syrup} Syrup"
+                );
+            }
+        }
+
+        Console.WriteLine(
+            $"  ₱{item.UnitPrice:F2} x{item.Quantity}"
+        );
+
+        Console.WriteLine(
+            $"  Subtotal: ₱{item.Subtotal:F2}"
+        );
+
+        Console.WriteLine();
     }
 
-    Console.WriteLine();
-    Console.WriteLine($"TOTAL: ₱{Total:F2}");
+    Console.WriteLine("----------------------------------------");
+
+    Console.WriteLine(
+        $"TOTAL:                 ₱{Total:F2}"
+    );
 
     if (Payment != null)
     {
-        Console.WriteLine();
+        Console.WriteLine("----------------------------------------");
 
         if (Payment is CashPayment cashPayment)
         {
-            Console.WriteLine("Payment Method: Cash");
-            Console.WriteLine($"Amount Due: ₱{cashPayment.Amount:F2}");
-            Console.WriteLine($"Cash Received: ₱{cashPayment.CashReceived:F2}");
-            Console.WriteLine($"Change: ₱{cashPayment.Change:F2}");
+            Console.WriteLine("Payment: Cash");
+
+            Console.WriteLine(
+                $"Amount Due:            ₱{cashPayment.Amount:F2}"
+            );
+
+            Console.WriteLine(
+                $"Cash Received:         ₱{cashPayment.CashReceived:F2}"
+            );
+
+            Console.WriteLine(
+                $"Change:                ₱{cashPayment.Change:F2}"
+            );
         }
-        else
+        else if (Payment is GCashPayment)
         {
-            Console.WriteLine($"Payment Method: {Payment.GetType().Name}");
-            Console.WriteLine($"Amount: ₱{Payment.Amount:F2}");
+            Console.WriteLine("Payment: GCash");
+
+            Console.WriteLine(
+                $"Amount Paid:           ₱{Payment.Amount:F2}"
+            );
+        }
+        else if (Payment is CardPayment)
+        {
+            Console.WriteLine("Payment: Card");
+
+            Console.WriteLine(
+                $"Amount Paid:           ₱{Payment.Amount:F2}"
+            );
         }
     }
 
-    Console.WriteLine("=================================");
-}
-
+    Console.WriteLine("----------------------------------------");
+    Console.WriteLine("          Thank you for your");
+    Console.WriteLine("             purchase!");
+    Console.WriteLine("========================================");
+    }
 }

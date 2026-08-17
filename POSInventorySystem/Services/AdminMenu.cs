@@ -25,49 +25,52 @@ public class AdminMenu
             Console.WriteLine("2. Add Product");
             Console.WriteLine("3. Update Product");
             Console.WriteLine("4. Restock Product");
-            Console.WriteLine("5. Exit");
+            Console.WriteLine("5. View Low Stock");
+            Console.WriteLine("6. View Sales Records");
+            Console.WriteLine("7. View Sales Summary");
+            Console.WriteLine("8. Exit");
             Console.WriteLine("=================================");
             Console.Write("Choose an option: ");
 
             string? choice = Console.ReadLine();
 
-switch (choice)
-{
-    case "1":
-        adminService.ViewInventory();
-        break;
+            switch (choice)
+            {
+                case "1":
+                    adminService.ViewInventory();
+                    break;
 
-    case "2":
-        adminService.AddProduct();
-        break;
+                case "2":
+                    adminService.AddProduct();
+                    break;
 
-    case "3":
-        adminService.UpdateProduct();
-        break;
+                case "3":
+                    adminService.UpdateProduct();
+                    break;
 
-    case "4":
-        adminService.RestockProduct();
-        break;
+                case "4":
+                    adminService.RestockProduct();
+                    break;
 
-    case "5":
-        adminService.ViewLowStock();
-        break;
+                case "5":
+                    adminService.ViewLowStock();
+                    break;
 
-    case "6":
-        adminService.ViewSalesRecords();
-        break;
+                case "6":
+                    adminService.ViewSalesRecords();
+                    break;
 
-    case "7":
-        adminService.ViewSalesSummary();
-        break;
+                case "7":
+                    adminService.ViewSalesSummary();
+                    break;
 
-    case "8":
-        running = false;
-        break;
+                case "8":
+                    running = false;
+                    break;
 
-    default:
-        Console.WriteLine("Invalid option.");
-        break;
+                default:
+                    Console.WriteLine("Invalid option.");
+                    break;
             }
         }
     }
