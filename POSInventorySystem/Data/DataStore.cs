@@ -38,4 +38,6 @@ public static class DataStore
             "Beverage"
         )
     };
+
+    public static List<Transaction> Transactions { get; } = new List<Transaction>();
 }

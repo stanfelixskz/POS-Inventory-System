@@ -172,4 +172,74 @@ product.UpdateProductInfo(
     Console.WriteLine();
     Console.WriteLine("Product updated successfully.");
     }
+
+
+    public void RestockProduct()
+{
+    Console.WriteLine();
+    Console.WriteLine("=================================");
+    Console.WriteLine("         RESTOCK PRODUCT");
+    Console.WriteLine("=================================");
+
+    Console.Write("Enter Product ID: ");
+    string? productId = Console.ReadLine();
+
+    Product? product = DataStore.Products.FirstOrDefault(
+        item => item.ProductId == productId
+    );
+
+    if (product == null)
+    {
+        Console.WriteLine("Product not found.");
+        return;
+    }
+
+    Console.WriteLine();
+    Console.WriteLine($"Product: {product.Name}");
+    Console.WriteLine($"Current Stock: {product.Stock}");
+
+    Console.Write("Enter quantity to add: ");
+
+    if (!int.TryParse(Console.ReadLine(), out int quantity) || quantity <= 0)
+    {
+        Console.WriteLine("Invalid stock quantity.");
+        return;
+    }
+
+    product.AddStock(quantity);
+
+    Console.WriteLine();
+    Console.WriteLine("Product restocked successfully.");
+    Console.WriteLine($"New Stock: {product.Stock}");
+    }
+
+    public void ViewLowStock()
+{
+    Console.WriteLine();
+    Console.WriteLine("=================================");
+    Console.WriteLine("          LOW STOCK PRODUCTS");
+    Console.WriteLine("=================================");
+
+    bool hasLowStock = false;
+
+    foreach (Product product in DataStore.Products)
+    {
+        if (product.IsLowStock())
+        {
+            Console.WriteLine(
+                $"{product.ProductId} | {product.Name} | " +
+                $"Stock: {product.Stock}"
+            );
+
+            hasLowStock = true;
+        }
+    }
+
+    if (!hasLowStock)
+    {
+        Console.WriteLine("No products are currently low on stock.");
+    }
+
+    Console.WriteLine("=================================");
+    }
 }
