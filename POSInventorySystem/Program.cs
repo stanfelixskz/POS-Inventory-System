@@ -134,6 +134,8 @@ if (!transaction.CompleteTransaction())
     continue;
 }
 
+DataStore.Transactions.Add(transaction);
+
 Console.WriteLine("Transaction completed successfully.");
 Console.WriteLine();
 
